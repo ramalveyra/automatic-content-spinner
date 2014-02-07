@@ -14,7 +14,7 @@ class Spinner
     # Detects whether to use the nested or flat version of the spinner (costs some speed)
     public static function detect($text, $seedPageName = true, $openingConstruct = '{{', $closingConstruct = '}}', $separator = '|')
     {
-        if(preg_match('~'.$openingConstruct.'(?:(?!'.$closingConstruct.').)*'.$openingConstruct.'~s', $text))
+        if(preg_match('~\\'.$openingConstruct.'(?:(?!'.$closingConstruct.').)*\\'.$openingConstruct.'~s', $text))
         {
             return self::nested($text, $seedPageName, $openingConstruct, $closingConstruct, $separator);
         }
@@ -41,7 +41,7 @@ class Spinner
             return $$return;
         }
        
-        if(preg_match_all('!'.$openingConstruct.'(.*?)'.$closingConstruct.'!s', $text, $matches))
+        if(preg_match_all('!\\'.$openingConstruct.'(.*?)\\'.$closingConstruct.'!s', $text, $matches))
         {
             # Optional, always show a particular combination on the page
             self::checkSeed($seedPageName);
@@ -84,7 +84,7 @@ class Spinner
         }
 
         # Find the first whole match
-        if(preg_match('!'.$openingConstruct.'(.+?)'.$closingConstruct.'!s', $text, $matches))
+        if(preg_match('!\\'.$openingConstruct.'(.+?)\\'.$closingConstruct.'!s', $text, $matches))
         {
             # Optional, always show a particular combination on the page
             self::checkSeed($seedPageName);
