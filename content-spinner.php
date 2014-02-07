@@ -89,8 +89,14 @@ if (!class_exists('ContentSpinner'))
 		    	$spin_content = TRUE;
 		    
 		    // spin only if required
-		    if ($spin_content)
+		    if ($spin_content){
+		    	if ($spinoption == 'flat')
+		    		$content = Spinner::flat($content, $spinmethod, FALSE, $opening_construct, $closing_construct, $separator);
+		    	else
 			$content = Spinner::$spinoption($content, $spinmethod, $opening_construct, $closing_construct, $separator);
+		   
+		    }
+			
 		   
 			return $content;
 		}
