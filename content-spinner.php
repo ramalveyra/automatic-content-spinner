@@ -1,13 +1,13 @@
 <?php
 /**
 * Plugin Name: Content Spinner
-* Plugin URI: https://github.com/Link7/wp-plugins/tree/automatic-content-spinner/content-spinner
+* Plugin URI: https://github.com/Link7/automatic-content-spinner
 * Description: A plugin to display spun text contents
 * Version: 1.0
 * Author: Link7
 * Author URI: http://github.com/Link7
 * License: GPL3
-* License URI: https://www.gnu.org/copyleft/gpl.html
+* License URI: http://www.gnu.org/licenses/gpl.html
 */
 
 include_once dirname( __FILE__ ) . '/classes/class-cs-constants.php';
