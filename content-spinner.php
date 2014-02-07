@@ -42,7 +42,7 @@ if (!class_exists('ContentSpinner'))
 		*/
 	  	public function display_menu()
 		{
-			add_options_page( 'Automatic Content Spinner', 'Automatic Content Spinner', 'manage_options', 'content-spinner/form.php' );
+			add_options_page( 'Automatic Content Spinner', 'Automatic Content Spinner', 'manage_options', dirname(__FILE__) . '/form.php' );
 			do_action('cs_check_posts');
 		}
 
