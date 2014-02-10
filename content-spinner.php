@@ -16,12 +16,34 @@ if (!class_exists('ContentSpinner'))
 	{
 		public $notice = NULL;
         public $notice_iserror = FALSE;
+        public $options = array();
+        public $spinmethod = Cs_Constants::SPIN_METHOD;
+	    public $spinpost = Cs_Constants::SPIN_POST;
+	    public $opening_construct = Cs_Constants::OPENING_CONSTRUCT;
+	    public $closing_construct = Cs_Constants::CLOSING_CONSTRUCT;
+	    public $separator = Cs_Constants::SEPARATOR;
+	    public $spinoption = Cs_Constants::SPIN_OPTION;
+
+	    public $post_titles = array();
 
 		public function __construct() 
 		{	
 			if ( ! is_admin() )
 			{
+				$this->options = get_option('cs_options');
+				
+				if (!empty($this->options)){
+					$this->spinmethod = $this->options['spinmethod'];
+			        $this->spinpost = $this->options['spinpost'];
+			        $this->opening_construct = $this->options['opening_construct'];
+			        $this->closing_construct = $this->options['closing_construct'];
+			        $this->separator = $this->options['separator'];
+			        $this->spinoption = $this->options['spinoption'];
+				}
+			
 				add_filter('the_content', array(&$this, 'spin_contents'));
+				add_filter('the_title', array(&$this, 'spin_title'));
+				add_filter('wp_title', array(&$this, 'spin_title'));
 			}
 			else
 			{
@@ -82,42 +104,76 @@ if (!class_exists('ContentSpinner'))
 			}
 		}
 
+		/**
+		* spin_title
+		* 
+		* spins all the titles
+		*
+		* @access public 
+		* @return NONE
+		*/
+		public function spin_title($title){
+		
+			if (current_filter() == 'wp_title')
+				$title = rtrim($title, '| ');
+			
+			$spin_title = $this->is_spin();
+		    $spinoption = $this->spinoption;
+		    // spin only if required
+		    $new_title = $title;
+		    $id = md5(get_the_ID().$title);
+		    if ($spin_title){
+		    	if (!isset($this->post_titles[$id]))
+		    	{
+		    		if ($spinoption == 'flat')
+		    			$new_title = Spinner::flat($new_title, $this->spinmethod, FALSE, $this->opening_construct, $this->closing_construct, $this->separator);
+		    		else
+		    			$new_title = Spinner::$spinoption($new_title, $this->spinmethod, $this->opening_construct, $this->closing_construct, $this->separator);
+
+		    		$this->post_titles[$id] = $new_title;
+		    }
+		    	else
+		    	{
+		    		$new_title = $this->post_titles[$id];
+		    	}
+		    }
+		    if (current_filter() == 'wp_title')
+		    	$new_title = $new_title . ' | ';
+			return $new_title;
+		}
+
+		/**
+		* spin_contents
+		* 
+		* spins post / page contents
+		*
+		* @access public 
+		* @return NONE
+		*/
 		public function spin_contents($content)
 		{	
-			$options = get_option('cs_options');
-			
-		    $spinmethod = Cs_Constants::SPIN_METHOD;
-		    $spinpost = Cs_Constants::SPIN_POST;
-		    $opening_construct = Cs_Constants::OPENING_CONSTRUCT;
-		    $closing_construct = Cs_Constants::CLOSING_CONSTRUCT;
-		    $separator = Cs_Constants::SEPARATOR;
-		    $spinoption = Cs_Constants::SPIN_OPTION;
-
-		    if (!empty($options)){
-		        $spinmethod = $options['spinmethod'];
-		        $spinpost = $options['spinpost'];
-		        $opening_construct = $options['opening_construct'];
-		        $closing_construct = $options['closing_construct'];
-		        $separator = $options['separator'];
-		        $spinoption = $options['spinoption'];
-		    }
-		    $spin_content = FALSE;
-		    if ($GLOBALS['post']->post_type == $spinpost)
-		    	$spin_content = TRUE;
-		    if ($spinpost == 'both')
-		    	$spin_content = TRUE;
 		    
+		    $spin_content = $this->is_spin();
+		    $spinoption = $this->spinoption;
 		    // spin only if required
 		    if ($spin_content){
 		    	if ($spinoption == 'flat')
-		    		$content = Spinner::flat($content, $spinmethod, FALSE, $opening_construct, $closing_construct, $separator);
+		    		$content = Spinner::flat($content, $this->spinmethod, FALSE, $this->opening_construct, $this->closing_construct, $this->separator);
 		    	else
-			$content = Spinner::$spinoption($content, $spinmethod, $opening_construct, $closing_construct, $separator);
+		    		$content = Spinner::$spinoption($content, $this->spinmethod, $this->opening_construct, $this->closing_construct, $this->separator);
 		   
 		    }
-			
-		   
 			return $content;
+		}
+			
+		private function is_spin(){
+			 $spin_content = FALSE;
+		    if ($GLOBALS['post']->post_type == $this->spinpost)
+		    	$spin_content = TRUE;
+		    if ($this->spinpost == 'both')
+		    	$spin_content = TRUE;
+		   
+		    return $spin_content;
 		}
 
 		/**
