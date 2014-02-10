@@ -9,12 +9,14 @@
 * License: GPL3
 * License URI: http://www.gnu.org/licenses/gpl.html
 */
-
 include_once dirname( __FILE__ ) . '/classes/class-cs-constants.php';
 if (!class_exists('ContentSpinner'))
 {
 	class ContentSpinner
 	{
+		public $notice = NULL;
+        public $notice_iserror = FALSE;
+
 		public function __construct() 
 		{	
 			if ( ! is_admin() )
@@ -24,12 +26,24 @@ if (!class_exists('ContentSpinner'))
 			else
 			{
 				add_action('admin_menu', array($this, 'display_menu') );
-				add_action('cs_check_posts', array($this, 'check_posts') );	
-
 				$this->permalink_structure = get_option('permalink_structure');
+
+				register_uninstall_hook(__FILE__, array('ContentSpinner','cs_uninstall_plugin'));
 			}
 
 			$this->includes();
+	  	}
+
+	  	/**
+		* cs_uninstall_plugin
+		* 
+		* completely removes the plugin installation
+		*
+		* @access public 
+		* @return void
+		*/
+	  	public function cs_uninstall_plugin(){
+	  		delete_option('cs_options');
 	  	}
 
 	  	/**
@@ -42,8 +56,11 @@ if (!class_exists('ContentSpinner'))
 		*/
 	  	public function display_menu()
 		{
-			add_options_page( 'Automatic Content Spinner', 'Automatic Content Spinner', 'manage_options', dirname(__FILE__) . '/form.php' );
-			do_action('cs_check_posts');
+			$menu_slug = add_options_page( 'Automatic Content Spinner', 'Automatic Content Spinner', 'manage_options', dirname(__FILE__) . '/form.php');
+			$menu_slug = str_replace('settings_page_', '', $menu_slug) . '.php';
+			
+			// load on checking of $_POSTs when on this page
+			add_action("load-".$menu_slug, array($this,'check_posts'));
 		}
 
 		/**
@@ -60,6 +77,8 @@ if (!class_exists('ContentSpinner'))
 				unset($_POST['cs_hidden']);
 				unset($_POST['submit']);
 				update_option('cs_options', $_POST);
+				$this->notice = "Settings saved.";
+				add_action('admin_notices', array($this, 'display_notification'));
 			}
 		}
 
@@ -137,6 +156,18 @@ if (!class_exists('ContentSpinner'))
 			// do site includes here
 			include_once('classes/spinner.php');
 		}
+
+		public function display_notification()
+		{	
+			if ($this->notice_iserror) {
+				echo '<div id="message" class="error">';
+			}
+			else {
+				echo '<div id="message" class="updated fade">';
+			}
+
+			echo "<p><strong>$this->notice</strong></p></div>";
+		}   
 
 	}
 }
