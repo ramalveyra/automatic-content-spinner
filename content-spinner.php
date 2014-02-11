@@ -26,6 +26,7 @@ if (!class_exists('ContentSpinner'))
 	    public $spin_titles = Cs_Constants::SPIN_TITLES;
 
 	    public $post_titles = array();
+	    public $menu_slug = NULL;
 
 		public function __construct() 
 		{	
@@ -80,11 +81,11 @@ if (!class_exists('ContentSpinner'))
 		*/
 	  	public function display_menu()
 		{
-			$menu_slug = add_options_page( 'Automatic Content Spinner', 'Automatic Content Spinner', 'manage_options', dirname(__FILE__) . '/form.php');
-			$menu_slug = str_replace('settings_page_', '', $menu_slug) . '.php';
+			$this->menu_slug = add_options_page( 'Automatic Content Spinner', 'Automatic Content Spinner', 'manage_options', dirname(__FILE__) . '/form.php');
+			$this->menu_slug = str_replace('settings_page_', '', $this->menu_slug) . '.php';
 			
 			// load on checking of $_POSTs when on this page
-			add_action('load-' . $menu_slug, array($this,'check_posts'));
+			add_action('load-' . $this->menu_slug, array($this,'check_posts'));
 		}
 
 		/**
@@ -104,6 +105,7 @@ if (!class_exists('ContentSpinner'))
 				update_option('cs_options', $_POST);
 				$this->notice = 'Settings saved.';
 				add_action('admin_notices', array($this, 'display_notification'));
+				wp_redirect(admin_url('options-general.php?page=' . $this->menu_slug));
 			}
 		}
 
