@@ -18,6 +18,8 @@ class Cs_Constants {
 
     const SPIN_OPTION = 'detect';
 
+    const SPIN_TITLES = FALSE;
+
 	static $spinmethods = array(
         'domainpage' => 'domain page (default)',
         'every second' => 'every second',

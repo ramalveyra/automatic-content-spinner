@@ -23,6 +23,7 @@ if (!class_exists('ContentSpinner'))
 	    public $closing_construct = Cs_Constants::CLOSING_CONSTRUCT;
 	    public $separator = Cs_Constants::SEPARATOR;
 	    public $spinoption = Cs_Constants::SPIN_OPTION;
+	    public $spin_titles = Cs_Constants::SPIN_TITLES;
 
 	    public $post_titles = array();
 
@@ -39,6 +40,7 @@ if (!class_exists('ContentSpinner'))
 			        $this->closing_construct = $this->options['closing_construct'];
 			        $this->separator = $this->options['separator'];
 			        $this->spinoption = $this->options['spinoption'];
+			        $this->spin_titles = $this->options['spin_titles'];
 				}
 			
 				add_filter('the_content', array(&$this, 'spin_contents'));
@@ -95,9 +97,10 @@ if (!class_exists('ContentSpinner'))
 		*/
 		public function check_posts()
 		{	
-			if($_POST['cs_hidden'] == 'Y') {  
+			if(isset($_POST['cs_hidden']) && $_POST['cs_hidden'] == 'Y') {  
 				unset($_POST['cs_hidden']);
 				unset($_POST['submit']);
+				$_POST['spin_titles'] = isset($_POST['spin_titles']) ? $_POST['spin_titles'] : '0';
 				update_option('cs_options', $_POST);
 				$this->notice = 'Settings saved.';
 				add_action('admin_notices', array($this, 'display_notification'));
@@ -113,6 +116,9 @@ if (!class_exists('ContentSpinner'))
 		* @return NONE
 		*/
 		public function spin_title($title){
+			
+			if (!$this->spin_titles)
+				return $title;
 		
 			if (current_filter() == 'wp_title')
 				$title = rtrim($title, '| ');

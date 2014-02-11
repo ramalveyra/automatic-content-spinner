@@ -8,6 +8,7 @@
     $closing_construct = Cs_Constants::CLOSING_CONSTRUCT;
     $separator = Cs_Constants::SEPARATOR;
     $spinoption = Cs_Constants::SPIN_OPTION;
+    $spin_titles = Cs_Constants::SPIN_TITLES;
 
     if (!empty($options)){
         $spinmethod = $options['spinmethod'];
@@ -16,6 +17,11 @@
         $closing_construct = $options['closing_construct'];
         $separator = $options['separator'];
         $spinoption = $options['spinoption'];
+
+        # added this check since this is a new field, for existing installs, this will cause unwanted error/notice since the db doesn't have this record yet
+        # this can be removed
+        if (isset($options['spin_titles'])) 
+        $spin_titles = $options['spin_titles'];
     }
     
     $spinmethods = array(
@@ -102,7 +108,13 @@
                 <p class="description">Specify the spin option to use, such as flat spin, nested spinning, or detect (default)</p>
                 </td>
             </tr>
-
+            <th scope="row"><label for="spin_titles"><?php _e("Spin Titles: " ); ?></label></th>
+                <td>
+                    <?php if ($spin_titles) $checked = 'checked="checked"'; else $checked = '';?>
+                    <label for="spin_titles"><input type="checkbox" value="1" id="spin_titles" <?php echo $checked;?> name="spin_titles"></label>
+                    <p class="description">Specify if allowed to spin titles (depends on the `Spin on` option)</p>
+                </td>
+            </tr>
             </tbody>
         </table>
 
