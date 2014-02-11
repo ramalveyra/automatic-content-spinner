@@ -103,9 +103,13 @@ if (!class_exists('ContentSpinner'))
 				unset($_POST['submit']);
 				$_POST['spin_titles'] = isset($_POST['spin_titles']) ? $_POST['spin_titles'] : '0';
 				update_option('cs_options', $_POST);
+				wp_redirect(admin_url('options-general.php?page=' . $this->menu_slug . '&settings-updated=true'));
+			}
+
+			if ( ! empty( $_GET['settings-updated'] ) ) 
+			{
 				$this->notice = 'Settings saved.';
 				add_action('admin_notices', array($this, 'display_notification'));
-				wp_redirect(admin_url('options-general.php?page=' . $this->menu_slug));
 			}
 		}
 
