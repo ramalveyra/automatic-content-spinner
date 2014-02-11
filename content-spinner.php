@@ -9,6 +9,8 @@
 * License: GPL3
 * License URI: http://www.gnu.org/licenses/gpl.html
 */
+if ( ! defined( 'ABSPATH' ) ) exit('No direct script access allowed'); // Exit if accessed directly
+
 include_once dirname( __FILE__ ) . '/classes/class-cs-constants.php';
 if (!class_exists('ContentSpinner'))
 {
