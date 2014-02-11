@@ -82,7 +82,7 @@ if (!class_exists('ContentSpinner'))
 			$menu_slug = str_replace('settings_page_', '', $menu_slug) . '.php';
 			
 			// load on checking of $_POSTs when on this page
-			add_action("load-".$menu_slug, array($this,'check_posts'));
+			add_action('load-' . $menu_slug, array($this,'check_posts'));
 		}
 
 		/**
@@ -99,7 +99,7 @@ if (!class_exists('ContentSpinner'))
 				unset($_POST['cs_hidden']);
 				unset($_POST['submit']);
 				update_option('cs_options', $_POST);
-				$this->notice = "Settings saved.";
+				$this->notice = 'Settings saved.';
 				add_action('admin_notices', array($this, 'display_notification'));
 			}
 		}
@@ -118,11 +118,13 @@ if (!class_exists('ContentSpinner'))
 				$title = rtrim($title, '| ');
 			
 			$spin_title = $this->is_spin();
+
+
 		    $spinoption = $this->spinoption;
 		    // spin only if required
 		    $new_title = $title;
-		    $id = md5(get_the_ID().$title);
 		    if ($spin_title){
+		    $id = md5(get_the_ID().$title);
 		    	if (!isset($this->post_titles[$id]))
 		    	{
 		    		if ($spinoption == 'flat')
@@ -168,10 +170,15 @@ if (!class_exists('ContentSpinner'))
 			
 		private function is_spin(){
 			 $spin_content = FALSE;
+
+			if (isset($GLOBALS['post']))
+			{
 		    if ($GLOBALS['post']->post_type == $this->spinpost)
 		    	$spin_content = TRUE;
 		    if ($this->spinpost == 'both')
 		    	$spin_content = TRUE;
+			}
+		    
 		   
 		    return $spin_content;
 		}
@@ -222,7 +229,7 @@ if (!class_exists('ContentSpinner'))
 				echo '<div id="message" class="updated fade">';
 			}
 
-			echo "<p><strong>$this->notice</strong></p></div>";
+			echo '<p><strong>' . $this->notice . '</strong></p></div>';
 		}   
 
 	}
