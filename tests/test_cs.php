@@ -147,12 +147,8 @@ class WP_Test_CS_Admin extends WP_UnitTestCase
  	*/
  	private function create_dummy_post($title, $content, $post_type)
  	{
- 		$post = new stdClass;
-		$post->post_author = 1;
-		$post->post_title = $title;
-		$post->post_content = $content;
-		$post->ID = -1;
-		$post->post_type = $post_type;
+ 		$id = $this->factory->post->create(array('post_type' => $post_type, 'post_title' => $title, 'post_content' => $content));
+ 		$post = get_post($id);
 		return $post;
  	}
 
