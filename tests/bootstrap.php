@@ -7,7 +7,10 @@
  * @package wordpress-plugin-tests
  */
 
-define('PLUGIN_TO_TEST', 'automatic-content-spinner/content-spinner.php');
+define('CS_PLUGIN_PATH', dirname(dirname(__FILE__)));
+define('CS_PLUGIN_FOLDER', basename(CS_PLUGIN_PATH));
+define('CS_PLUGIN_TO_TEST',  CS_PLUGIN_FOLDER . '/content-spinner.php');
+
 
 // Activates this plugin in WordPress so it can be tested.
 $GLOBALS['wp_tests_options'] = array(
@@ -18,8 +21,11 @@ $GLOBALS['wp_tests_options'] = array(
 // location. Otherwise, we'll just assume that this plugin is installed in a
 // WordPress develop SVN checkout.
 
-if( false !== getenv( 'WP_DEVELOP_DIR' ) ) {
+if( false !== getenv( 'WP_DEVELOP_DIR' ) ) 
+{
 	require getenv( 'WP_DEVELOP_DIR' ) . '/tests/phpunit/includes/bootstrap.php';
-} else {
+} 
+else 
+{
 	require '../../../../tests/phpunit/includes/bootstrap.php';
 }

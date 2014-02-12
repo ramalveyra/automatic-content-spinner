@@ -53,7 +53,6 @@ if (!class_exists('ContentSpinner'))
 			else
 			{
 				add_action('admin_menu', array($this, 'display_menu') );
-				$this->permalink_structure = get_option('permalink_structure');
 
 				register_uninstall_hook(__FILE__, array('ContentSpinner','cs_uninstall_plugin'));
 			}
@@ -182,7 +181,7 @@ if (!class_exists('ContentSpinner'))
 			return $content;
 		}
 			
-		private function is_spin(){
+		public function is_spin(){
 			 $spin_content = FALSE;
 
 			if (isset($GLOBALS['post']))
