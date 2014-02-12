@@ -11,10 +11,9 @@ define('CS_PLUGIN_PATH', dirname(dirname(__FILE__)));
 define('CS_PLUGIN_FOLDER', basename(CS_PLUGIN_PATH));
 define('CS_PLUGIN_TO_TEST',  CS_PLUGIN_FOLDER . '/content-spinner.php');
 
-
 // Activates this plugin in WordPress so it can be tested.
 $GLOBALS['wp_tests_options'] = array(
-	'active_plugins' => array( 'automatic-content-spinner/content-spinner.php' ),
+	'active_plugins' => array( CS_PLUGIN_TO_TEST ),
 );
 
 // If the develop repo location is defined (as WP_DEVELOP_DIR), use that
