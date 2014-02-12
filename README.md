@@ -1,6 +1,6 @@
 # Automatic Content Spinner
 
-[![Build Status](https://travis-ci.org/deanearlbartolabac/automatic-content-spinner.png?branch=master)](https://travis-ci.org/deanearlbartolabac/automatic-content-spinner)
+[![Build Status](https://travis-ci.org/Link7/automatic-content-spinner.png?branch=master)](https://travis-ci.org/Link7/automatic-content-spinner)
 
 This plugin spins contents of WP pages (posts/pages).
 
