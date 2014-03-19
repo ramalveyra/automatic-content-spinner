@@ -7,6 +7,7 @@ Version: 1.0
 Author: PAUL NORMAN 
 Author URI: http://www.paul-norman.co.uk/2010/09/php-spinner-updated-spin-articles-for-seo/
 */
+if ( ! defined( 'ABSPATH' ) ) exit('No direct script access allowed'); // Exit if accessed directly
 class Spinner
 {
 	var $limit;

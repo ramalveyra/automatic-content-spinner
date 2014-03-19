@@ -1,5 +1,6 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit('No direct script access allowed'); // Exit if accessed directly ?>
 <div class="wrap">
-    <?php echo "<h2>" . __( 'Automatic Content Spinner' ) . "</h2>";?>  
+    <?php echo '<h2>' . __( 'Automatic Content Spinner' ) . '</h2>';?>  
     <?php 
     $options = get_option('cs_options');
     $spinmethod = Cs_Constants::SPIN_METHOD;
@@ -8,6 +9,7 @@
     $closing_construct = Cs_Constants::CLOSING_CONSTRUCT;
     $separator = Cs_Constants::SEPARATOR;
     $spinoption = Cs_Constants::SPIN_OPTION;
+    $spin_titles = Cs_Constants::SPIN_TITLES;
 
     if (!empty($options)){
         $spinmethod = $options['spinmethod'];
@@ -16,6 +18,11 @@
         $closing_construct = $options['closing_construct'];
         $separator = $options['separator'];
         $spinoption = $options['spinoption'];
+
+        # added this check since this is a new field, for existing installs, this will cause unwanted error/notice since the db doesn't have this record yet
+        # this can be removed
+        if (isset($options['spin_titles'])) 
+        $spin_titles = $options['spin_titles'];
     }
     
     $spinmethods = array(
@@ -37,7 +44,7 @@
             <tbody>
 
             <tr valign="top">
-                <th scope="row"><label for="spinmethod"><?php _e("Spin Method: " ); ?></label></th>
+                <th scope="row"><label for="spinmethod"><?php _e('Spin Method: ' ); ?></label></th>
                 <td>
                 <select id="spinmethod" name="spinmethod"  style="width: 25em">
                     <?php foreach (Cs_Constants::$spinmethods as $spinid => $spinvalue) :?>
@@ -51,7 +58,7 @@
             </tr>
 
             <tr>
-            <th scope="row"><label for="spinpost"><?php _e("Spin on: " ); ?></label></th>
+            <th scope="row"><label for="spinpost"><?php _e('Spin on: ' ); ?></label></th>
             <td>
                 <select id="spinpost" name="spinpost"  style="width: 25em">
                     <?php foreach (Cs_Constants::$spinposts as $spinpostid => $spinpostvalue) :?>
@@ -64,7 +71,7 @@
             </tr>
             
             <tr>
-            <th scope="row"><label for="opening_construct"><?php _e("Spin Tags: " ); ?></label></th>
+            <th scope="row"><label for="opening_construct"><?php _e('Spin Tags: ' ); ?></label></th>
             <td>
                 <select id="opening_construct" name="opening_construct"  style="width: 25em">
                     <?php foreach (Cs_Constants::$spintags['opening_construct'] as $opening_constructv) :?>
@@ -91,7 +98,7 @@
             </tr>
 
             <tr>
-            <th scope="row"><label for="spinoption"><?php _e("Spin Option: " ); ?></label></th>
+            <th scope="row"><label for="spinoption"><?php _e('Spin Option: ' ); ?></label></th>
                 <td>
                 <select id="spinoption" name="spinoption"  style="width: 25em">
                     <?php foreach (Cs_Constants::$spinoptions as $spinoptionid => $spinoptionvalue) :?>
@@ -102,7 +109,13 @@
                 <p class="description">Specify the spin option to use, such as flat spin, nested spinning, or detect (default)</p>
                 </td>
             </tr>
-
+            <th scope="row"><label for="spin_titles"><?php _e('Spin Titles: ' ); ?></label></th>
+                <td>
+                    <?php if ($spin_titles) $checked = 'checked="checked"'; else $checked = '';?>
+                    <label for="spin_titles"><input type="checkbox" value="1" id="spin_titles" <?php echo $checked;?> name="spin_titles"></label>
+                    <p class="description">Specify if allowed to spin titles (depends on the `Spin on` option)</p>
+                </td>
+            </tr>
             </tbody>
         </table>
 

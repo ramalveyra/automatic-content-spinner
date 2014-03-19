@@ -7,6 +7,7 @@
  * @package                content-spinner/classes
  * @category        		Class
  */
+if ( ! defined( 'ABSPATH' ) ) exit('No direct script access allowed'); // Exit if accessed directly
 class Cs_Constants {
 	
     const SPIN_METHOD = 'domainpage';
@@ -17,6 +18,8 @@ class Cs_Constants {
     const SEPARATOR = '|'; 
 
     const SPIN_OPTION = 'detect';
+
+    const SPIN_TITLES = FALSE;
 
 	static $spinmethods = array(
         'domainpage' => 'domain page (default)',
