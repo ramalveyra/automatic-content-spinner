@@ -36,8 +36,8 @@ class Cs_Constants {
 	static $spinoptions = array('flat' => 'flat', 'nested' => 'nested', 'detect' => 'detect');
 	static $spinposts = array('post' => 'post', 'page' => 'page', 'both' => 'both');
     static $spintags = array(
-        "opening_construct" => array('{', '[', '{{'),
-        "closing_construct" => array('}', ']', '}}'),
+        "opening_construct" => array('{', '{{', '['),
+        "closing_construct" => array('}', '}}', ']'),
         "separator" => array('|', '||', '_', '__', '-'),
         );
 }

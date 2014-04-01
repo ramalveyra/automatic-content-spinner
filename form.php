@@ -76,7 +76,12 @@
                 <select id="opening_construct" name="opening_construct"  style="width: 25em">
                     <?php foreach (Cs_Constants::$spintags['opening_construct'] as $opening_constructv) :?>
                     	<?php if ($opening_construct == $opening_constructv) $selected = 'selected="selected"'; else $selected = '';?>
-                        <option value="<?php echo $opening_constructv?>" <?php echo $selected;?>><?php echo $opening_constructv;?></option>
+                        <?php 
+                        $addondec = NULL;
+                        if ($opening_constructv == '[')
+                            $addondec = ' (warning: conflicts with shortcodes)';
+                        ?>
+                        <option value="<?php echo $opening_constructv?>" <?php echo $selected;?>><?php echo $opening_constructv . $addondec;?></option>
                     <?php endforeach;?>
                 </select>
                 <p class="description">Specify the opening construct to use</p>
