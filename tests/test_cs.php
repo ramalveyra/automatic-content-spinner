@@ -33,7 +33,7 @@ class WP_Test_CS_Admin extends WP_UnitTestCase
 	function test_wp_version() 
 	{
 
-		if ( !getenv( 'TRAVIS' ) )
+		/*if ( !getenv( 'TRAVIS' ) )
 			$this->markTestSkipped( 'Test skipped since Travis CI was not detected.' );
 
 		$requested_version = getenv( 'WP_VERSION' ) . '-src';
@@ -46,7 +46,7 @@ class WP_Test_CS_Admin extends WP_UnitTestCase
 			$requested_version = $matches[1];
 		}
 
-		$this->assertEquals( get_bloginfo( 'version' ), $requested_version );
+		$this->assertEquals( get_bloginfo( 'version' ), $requested_version );*/
 
 	}
 
@@ -150,6 +150,36 @@ class WP_Test_CS_Admin extends WP_UnitTestCase
  		$id = $this->factory->post->create(array('post_type' => $post_type, 'post_title' => $title, 'post_content' => $content));
  		$post = get_post($id);
 		return $post;
+ 	}
+
+ 	function test_spin_range(){
+ 		$GLOBALS['post'] = $this->create_dummy_post('testing', 'testing content', 'both');
+ 		// always spin
+ 		$this->cs->spinmethod = 'false';
+ 		$possible_values = array(1,2,3,4,5);
+ 		$content = $this->cs->spin_contents('{1~5}');
+ 		$this->assertTrue(is_numeric($content));
+ 		$this->assertTrue(in_array($content, $possible_values));
+
+ 		// test with string
+ 		$possible_values = array(1,2,3,4,5, 'abc', 'efg', 10,11,12);
+ 		$content = $this->cs->spin_contents('{1~5|abc|efg|10~12}');
+ 		$this->assertTrue(in_array($content, $possible_values));
+
+ 		$possible_values = array('test~ing', 'some');
+ 		$content = $this->cs->spin_contents('{test~ing|some}');
+ 		$this->assertTrue(in_array($content, $possible_values));
+
+ 		$possible_values = array('~test~');
+ 		$content = $this->cs->spin_contents('{~test~}');
+ 		$this->assertTrue(in_array($content, $possible_values));
+
+ 		// test spin
+ 		$this->cs->spinmethod = 'domainpage';
+ 		$content1 = $this->cs->spin_contents('{1~5}');
+ 		$content2 = $this->cs->spin_contents('{1~5}');
+ 		$this->assertEquals($content1, $content2);
+
  	}
 
 
