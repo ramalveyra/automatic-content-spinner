@@ -134,7 +134,15 @@ class Spinner
                     $replace[$key] = '';
                 }
 
-                $string = mb_substr($string, 0, $pos).$replace[$key].mb_substr($string, $pos + mb_strlen($value));
+                $check_range = explode('~', $replace[$key]);
+                
+                if (!empty($check_range) && count($check_range) == 2 && (is_numeric($check_range[0]) && is_numeric($check_range[1])))
+                {
+               
+                    $replace[$key] = mt_rand($check_range[0], $check_range[1]);
+                }
+                
+                $string = mb_substr($string, 0, $pos).$replace[$key].mb_substr($string, $pos + mb_strlen($value));    
             }
         }
 
