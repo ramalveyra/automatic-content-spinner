@@ -47,6 +47,8 @@ if (!class_exists('ContentSpinner'))
 				}
 			
 				add_filter('the_content', array(&$this, 'spin_contents'));
+				add_filter( 'wp_nav_menu_objects', array($this, 'custom_nav_items'), 98, 2 );
+				add_filter('widget_text', array($this, 'spin_contents'));
 				add_filter('the_title', array(&$this, 'spin_title'));
 				add_filter('wp_title', array(&$this, 'spin_title'));
 			}
@@ -179,6 +181,15 @@ if (!class_exists('ContentSpinner'))
 		   
 		    }
 			return $content;
+		}
+
+		public function custom_nav_items($items, $args)
+		{
+			global $post;
+			
+			$post->post_content = $this->spin_contents($post->post_content);	
+
+			return $items;
 		}
 			
 		public function is_spin(){
