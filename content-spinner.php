@@ -186,8 +186,8 @@ if (!class_exists('ContentSpinner'))
 		public function custom_nav_items($items, $args)
 		{
 			global $post;
-			
-			$post->post_content = $this->spin_contents($post->post_content);	
+			if (!is_null($post))
+				$post->post_content = $this->spin_contents($post->post_content);	
 
 			return $items;
 		}
