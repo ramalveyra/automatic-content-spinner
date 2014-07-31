@@ -3,7 +3,7 @@
 * Plugin Name: Content Spinner
 * Plugin URI: https://github.com/Link7/automatic-content-spinner
 * Description: A plugin to display spun text contents
-* Version: 1.0
+* Version: 0.7.0
 * Author: Link7
 * Author URI: http://github.com/Link7
 * License: GPL3
