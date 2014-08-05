@@ -13,20 +13,20 @@ class Spinner
 	var $limit;
 
     # Detects whether to use the nested or flat version of the spinner (costs some speed)
-    public static function detect($text, $seedPageName = true, $openingConstruct = '{{', $closingConstruct = '}}', $separator = '|')
+    public static function detect($text, $seedPageName = true, $openingConstruct = '{{', $closingConstruct = '}}', $separator = '|', $addseed = NULL)
     {
         if(preg_match('~\\'.$openingConstruct.'(?:(?!'.$closingConstruct.').)*\\'.$openingConstruct.'~s', $text))
         {
-            return self::nested($text, $seedPageName, $openingConstruct, $closingConstruct, $separator);
+            return self::nested($text, $seedPageName, $openingConstruct, $closingConstruct, $separator, $addseed);
         }
         else
         {
-            return self::flat($text, $seedPageName, false, $openingConstruct, $closingConstruct, $separator);
+            return self::flat($text, $seedPageName, false, $openingConstruct, $closingConstruct, $separator, $addseed);
         }
     }
 
     # The flat version does not allow nested spin blocks, but is much faster (~2x)
-    public static function flat($text, $seedPageName = true, $calculate = false, $openingConstruct = '{', $closingConstruct = '}', $separator = '|')
+    public static function flat($text, $seedPageName = true, $calculate = false, $openingConstruct = '{', $closingConstruct = '}', $separator = '|' ,$addseed = NULL)
     {
         # Choose whether to return the string or the number of permutations
         $return = 'text';
@@ -45,7 +45,7 @@ class Spinner
         if(preg_match_all('!\\'.$openingConstruct.'(.*?)\\'.$closingConstruct.'!s', $text, $matches))
         {
             # Optional, always show a particular combination on the page
-            self::checkSeed($seedPageName);
+            self::checkSeed($seedPageName, $addseed);
 
             $find       = array();
             $replace    = array();
@@ -76,7 +76,7 @@ class Spinner
     }
 
     # The nested version allows nested spin blocks, but is slower
-    public static function nested($text, $seedPageName = true, $openingConstruct = '{', $closingConstruct = '}', $separator = '|')
+    public static function nested($text, $seedPageName = true, $openingConstruct = '{', $closingConstruct = '}', $separator = '|',$addseed = NULL)
     {
         # If we have nothing to spin just exit (don't use a regexp)
         if(strpos($text, $openingConstruct) === false)
@@ -88,7 +88,7 @@ class Spinner
         if(preg_match('!\\'.$openingConstruct.'(.+?)\\'.$closingConstruct.'!s', $text, $matches))
         {
             # Optional, always show a particular combination on the page
-            self::checkSeed($seedPageName);
+            self::checkSeed($seedPageName,$addseed);
 
             # Only take the last block
             if(($pos = mb_strrpos($matches[1], $openingConstruct)) !== false)
@@ -101,7 +101,7 @@ class Spinner
             $text   = self::str_replace_first($openingConstruct.$matches[1].$closingConstruct, $parts[mt_rand(0, count($parts) - 1)], $text);
 
             # We need to continue until there is nothing left to spin
-            return self::nested($text, $seedPageName, $openingConstruct, $closingConstruct, $separator);
+            return self::nested($text, $seedPageName, $openingConstruct, $closingConstruct, $separator, $addseed);
         }
         else
         {
@@ -149,76 +149,76 @@ class Spinner
         return $string;
     }
 
-    private static function checkSeed($seedPageName)
+    private static function checkSeed($seedPageName,$addseed = NULL)
     {
         # Don't do the check if we are using random seeds
         if($seedPageName)
         {
             if($seedPageName === true)
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].$addseed));
             }
             elseif($seedPageName == 'every second')
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-m-d-H-i-s')));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-m-d-H-i-s').$addseed));
             }
             elseif($seedPageName == 'every minute')
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-m-d-H-i')));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-m-d-H-i').$addseed));
             }
             elseif($seedPageName == 'hourly' OR $seedPageName == 'every hour')
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-m-d-H')));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-m-d-H').$addseed));
             }
             elseif($seedPageName == 'daily' OR $seedPageName == 'every day')
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-m-d')));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-m-d').$addseed));
             }
             elseif($seedPageName == 'weekly' OR $seedPageName == 'every week')
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-W')));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-W').$addseed));
             }
             elseif($seedPageName == 'monthly' OR $seedPageName == 'every month')
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-m')));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y-m').$addseed));
             }
             elseif($seedPageName == 'annually' OR $seedPageName == 'every year')
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y')));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].date('Y').$addseed));
             }
             elseif(preg_match('!every ([0-9.]+) seconds!', $seedPageName, $matches))
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / $matches[1])));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / $matches[1]).$addseed));
             }
             elseif(preg_match('!every ([0-9.]+) minutes!', $seedPageName, $matches))
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 60))));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 60)).$addseed));
             }
             elseif(preg_match('!every ([0-9.]+) hours!', $seedPageName, $matches))
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 3600))));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 3600)).$addseed));
             }
             elseif(preg_match('!every ([0-9.]+) days!', $seedPageName, $matches))
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 86400))));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 86400)).$addseed));
             }
             elseif(preg_match('!every ([0-9.]+) weeks!', $seedPageName, $matches))
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 604800))));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 604800)).$addseed));
             }
             elseif(preg_match('!every ([0-9.]+) months!', $seedPageName, $matches))
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 2620800))));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 2620800)).$addseed));
             }
             elseif(preg_match('!every ([0-9.]+) years!', $seedPageName, $matches))
             {
-                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 31449600))));
+                mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].floor(time() / ($matches[1] * 31449600)).$addseed));
             }
             elseif($seedPageName === 'domainpage') {
-				mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']));
+				mt_srand(crc32($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].$addseed));
   			}
 			elseif($seedPageName === 'domain') {
-				mt_srand(crc32($_SERVER['HTTP_HOST']));
+				mt_srand(crc32($_SERVER['HTTP_HOST'].$addseed));
   			}
             elseif($seedPageName === 'false') {
                 mt_srand();

@@ -167,17 +167,16 @@ if (!class_exists('ContentSpinner'))
 		* @access public 
 		* @return NONE
 		*/
-		public function spin_contents($content)
+		public function spin_contents($content, $addseed = NULL)
 		{	
-		    
 		    $spin_content = $this->is_spin();
 		    $spinoption = $this->spinoption;
 		    // spin only if required
 		    if ($spin_content){
 		    	if ($spinoption == 'flat')
-		    		$content = Spinner::flat($content, $this->spinmethod, FALSE, $this->opening_construct, $this->closing_construct, $this->separator);
+		    		$content = Spinner::flat($content, $this->spinmethod, FALSE, $this->opening_construct, $this->closing_construct, $this->separator, $addseed);
 		    	else
-		    		$content = Spinner::$spinoption($content, $this->spinmethod, $this->opening_construct, $this->closing_construct, $this->separator);
+		    		$content = Spinner::$spinoption($content, $this->spinmethod, $this->opening_construct, $this->closing_construct, $this->separator, $addseed);
 		   
 		    }
 			return $content;
